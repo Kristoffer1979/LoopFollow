@@ -71,7 +71,8 @@ jobs:
         if: env.ALIVE_BRANCH_EXISTS == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
+          
+        run: REMOTE_COMMANDS_ENABLED: true|
           # Get ref for UPSTREAM_REPO:main
           SHA_MAIN=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/git/refs/heads/main | jq -r '.object.sha')
 
