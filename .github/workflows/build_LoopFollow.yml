@@ -68,14 +68,15 @@ jobs:
             echo "ALIVE_BRANCH_EXISTS=false" >> $GITHUB_ENV
           fi
 
-      - name: Create alive branches
-        if: env.ALIVE_BRANCH_EXISTS == 'false'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          
-        run: REMOTE_COMMANDS_ENABLED: true|
-          # Get ref for UPSTREAM_REPO:main
-          SHA_MAIN=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/git/refs/heads/main | jq -r '.object.sha')
+     - name: Create alive branches
+  if: env.ALIVE_BRANCH_EXISTS == 'false'
+  env:
+    GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    REMOTE_COMMANDS_ENABLED: true
+  run: |
+    # Hämta ref för UPSTREAM_REPO:main
+    SHA_MAIN=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" \
+      "https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/git/refs/heads/main" | jq -r .object.sha)
 
           # Get ref for UPSTREAM_REPO:dev
           SHA_DEV=$(curl -sS -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ env.UPSTREAM_REPO }}/git/refs/heads/dev | jq -r '.object.sha')
